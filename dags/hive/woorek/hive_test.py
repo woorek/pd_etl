@@ -7,7 +7,7 @@ from airflow.models.variable import Variable
 default_args = {
     "owner": "woorek",
     "depends_on_past": False,
-    "start_date": datetime(2023, 6, 1),
+    "start_date": datetime(2023, 6, 2),
     "retries": 0,
 }
 
@@ -62,13 +62,13 @@ bash_task_cp_data_from_server_to_hdfs = BashOperator(
 		dag=woorek_dag
 )
 
-'''
+
 bash_task_create_table_hql = BashOperator(
 		task_id='create_table_by_hql',
 		bash_command="""
 		sshpass -p {{ var.value.server_psswd }} ssh yoda@192.168.90.128 -o StrictHostKeyChecking=no;
 		cd ~/hive/query;
-		hive -f OARLP_2022.hql
+		hive -f OARLP.hql
 		if [[ $? -eq 0 ]]; then
             echo "fine!"
         else
@@ -77,7 +77,7 @@ bash_task_create_table_hql = BashOperator(
 		""",
 		dag=woorek_dag
 )
-'''
+
 
 bash_task_end_alert = BashOperator(
         task_id='end_bash_alert',
@@ -88,9 +88,9 @@ bash_task_end_alert = BashOperator(
 )
 
 # Set task dependencies
-#bash_task_start_alert >> bash_task_cp_data_from_s3 >> bash_task_cp_data_from_local_to_server >> bash_task_cp_data_from_server_to_hdfs >> bash_task_create_table_hql >> bash_task_end_alert
+bash_task_start_alert >> bash_task_cp_data_from_s3 >> bash_task_cp_data_from_local_to_server >> bash_task_cp_data_from_server_to_hdfs >> bash_task_create_table_hql >> bash_task_end_alert
 
-bash_task_start_alert >> bash_task_cp_data_from_s3 >> bash_task_cp_data_from_local_to_server >> bash_task_cp_data_from_server_to_hdfs >> bash_task_end_alert
+#bash_task_start_alert >> bash_task_cp_data_from_s3 >> bash_task_cp_data_from_local_to_server >> bash_task_cp_data_from_server_to_hdfs >> bash_task_end_alert
 
 
 
