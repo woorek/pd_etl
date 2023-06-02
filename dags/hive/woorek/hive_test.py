@@ -52,7 +52,8 @@ bash_task_cp_data_from_server_to_hdfs = BashOperator(
 		task_id='data_from_server_to_hdfs',
 		bash_command="""
 		sshpass -p {{ var.value.server_psswd }} ssh yoda@192.168.90.128 -o StrictHostKeyChecking=no;
-		hdfs dfs -copyFromLocal ~/data/OARLP_2022.csv /user/woorek/hive/OARLP_2022.csv;
+		hdfs dfs -mkdir /user/woorek/hive/warehouse/oarlp;
+		hdfs dfs -copyFromLocal ~/data/OARLP_2022.csv /user/woorek/hive/warehouse/oarlp/OARLP_2022.csv;
 		if [[ $? -eq 0 ]]; then
             echo "fine!"
         else
