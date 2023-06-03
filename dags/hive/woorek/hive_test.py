@@ -51,9 +51,7 @@ bash_task_cp_data_from_local_to_server = BashOperator(
 bash_task_cp_data_from_server_to_hdfs = BashOperator(
 		task_id='data_from_server_to_hdfs',
 		bash_command="""
-		sshpass -p {{ var.value.server_psswd }} ssh yoda@192.168.90.128 -o StrictHostKeyChecking=no;
-		hdfs dfs -mkdir /user/woorek/hive/warehouse/oarlp;
-		hdfs dfs -copyFromLocal ~/data/OARLP_2022.csv /user/woorek/hive/warehouse/oarlp/OARLP_2022.csv;
+		sshpass -p {{ var.value.server_psswd }} ssh yoda@192.168.90.128 '~/hadoop/hadoop-3.3.4/bin/hdfs dfs -mkdir /user/woorek/hive/warehouse/oarlp && ~/hadoop/hadoop-3.3.4/bin/hdfs dfs -copyFromLocal ~/data/OARLP_2022.csv /user/woorek/hive/warehouse/oarlp/OARLP_2022.csv';
 		if [[ $? -eq 0 ]]; then
             echo "fine!"
         else
@@ -67,9 +65,7 @@ bash_task_cp_data_from_server_to_hdfs = BashOperator(
 bash_task_create_table_hql = BashOperator(
 		task_id='create_table_by_hql',
 		bash_command="""
-		sshpass -p {{ var.value.server_psswd }} ssh yoda@192.168.90.128 -o StrictHostKeyChecking=no;
-		cd ~/hive/query;
-		hive -f OARLP.hql
+		sshpass -p {{ var.value.server_psswd }} ssh yoda@192.168.90.128 'cd ~/hive/query && ~/hive/apache-hive-3.1.2-bin/bin/hive -f OARLP.hql';
 		if [[ $? -eq 0 ]]; then
             echo "fine!"
         else
